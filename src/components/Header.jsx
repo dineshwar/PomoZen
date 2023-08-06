@@ -1,3 +1,5 @@
+import SettingsModal from "./SettingsModal";
+
 const Header = () => {
   return (
     <div className="navbar bg-base-100">
@@ -7,7 +9,7 @@ const Header = () => {
       <div className="flex-none">
         <button
           className="btn btn-square btn-ghost"
-          onClick={() => window.my_modal_5.showModal()}
+          onClick={() => window.settings_modal.showModal()}
         >
           <svg
             className="h-6 w-6 text-white"
@@ -26,20 +28,8 @@ const Header = () => {
             <circle cx="12" cy="12" r="3" />
           </svg>
         </button>
+        <SettingsModal />
       </div>
-      {/* Open the modal using ID.showModal() method */}
-      <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
-        <form method="dialog" className="modal-box">
-          <h3 className="font-bold text-lg">Hello!</h3>
-          <p className="py-4">
-            Press ESC key or click the button below to close
-          </p>
-          <div className="modal-action">
-            {/* if there is a button in form, it will close the modal */}
-            <button className="btn">Close</button>
-          </div>
-        </form>
-      </dialog>
     </div>
   );
 };
