@@ -2,7 +2,7 @@ import Header from "@components/Header";
 import { useEffect, useState } from "react";
 
 function App() {
-  const [activeTab, setActiveTab] = useState("pamodoro");
+  const [activeTab, setActiveTab] = useState("pomodoro");
   const [active, setActive] = useState(false);
   const [time, setTime] = useState({
     min: 25,
@@ -10,7 +10,7 @@ function App() {
   });
   const onTabClickHandler = (tab) => {
     let newTime = {};
-    if (tab === "pamodoro") {
+    if (tab === "pomodoro") {
       newTime = {
         min: 25,
         sec: 0,
@@ -63,10 +63,10 @@ function App() {
         <div>
           <div className="tabs tabs-boxed mt-3">
             <a
-              className={getClassName("pamodoro")}
-              onClick={() => onTabClickHandler("pamodoro")}
+              className={getClassName("pomodoro")}
+              onClick={() => onTabClickHandler("pomodoro")}
             >
-              Pamodoro
+              Pomodoro
             </a>
             <a
               className={getClassName("short_break")}
@@ -99,12 +99,14 @@ function App() {
             <button
               className="btn btn-primary p-2"
               onClick={() => onStartTimer()}
+              disabled={active}
             >
               Start
             </button>
             <button
               className="btn btn-secondary p-2"
               onClick={() => onStopTimer()}
+              disabled={!active}
             >
               Stop
             </button>

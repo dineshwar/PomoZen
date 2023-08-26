@@ -8,7 +8,7 @@ export default {
   plugins: [daisyui],
   daisyui: {
     themes: [
-      "cyberpunk",
+      "synthwave",
       {
         pomodoro: {
           "primary": "#78eddb",
