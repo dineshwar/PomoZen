@@ -1,6 +1,7 @@
+import { PropTypes } from "prop-types";
 import SettingsModal from "./SettingsModal";
 
-const Header = () => {
+const Header = ({form, setForm}) => {
   return (
     <div className="navbar bg-base-100">
       <div className="flex-1">
@@ -28,10 +29,15 @@ const Header = () => {
             <circle cx="12" cy="12" r="3" />
           </svg>
         </button>
-        <SettingsModal />
+        <SettingsModal form={form} setForm={setForm} />
       </div>
     </div>
   );
 };
+
+Header.propTypes = {
+  form: PropTypes.object,
+  setForm: PropTypes.func,
+}
 
 export default Header;

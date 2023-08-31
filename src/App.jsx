@@ -1,28 +1,42 @@
 import Header from "@components/Header";
 import { useEffect, useState } from "react";
+import { merge } from 'lodash';
 
 function App() {
+  const defaultFormData = {
+    timer: {
+      pomodoro: 25,
+      short_break: 5,
+      long_break: 15,
+    },
+    auto_start_break: true,
+    auto_start_pomodoro: true,
+    long_break_interval: 3,
+  };
   const [activeTab, setActiveTab] = useState("pomodoro");
   const [active, setActive] = useState(false);
+  const formData = JSON.parse(localStorage.getItem('pomodoro_settings'));
+  const stateData = merge({}, defaultFormData, formData)
+  const [form, setForm] = useState(stateData);
   const [time, setTime] = useState({
-    min: 25,
+    min: form.timer.pomodoro,
     sec: 0,
   });
   const onTabClickHandler = (tab) => {
     let newTime = {};
     if (tab === "pomodoro") {
       newTime = {
-        min: 25,
+        min: form.timer.pomodoro,
         sec: 0,
       };
     } else if (tab === "short_break") {
       newTime = {
-        min: 5,
+        min: form.timer.short_break,
         sec: 0,
       };
     } else {
       newTime = {
-        min: 15,
+        min: form.timer.long_break,
         sec: 0,
       };
     }
@@ -44,21 +58,52 @@ function App() {
     let interval = null;
     if (active) {
       interval = setInterval(() => {
-        if (time.sec === 0) {
-          setTime({ min: time.min - 1, sec: 59 });
-        } else if (time.min === 0 && time.min ===0) {
+        if (time.min === 0 && time.sec === 0) {
+          let totalSession = localStorage.getItem('total_session_completed') ?? 0;
           clearInterval(interval);
-          setActive(false);
+          let countSession = isNaN(parseInt(totalSession)) ? 1 : parseInt(totalSession)+1;
+          localStorage.setItem('total_session_completed', countSession);
+          if(activeTab === 'pomodoro') {
+            if(form.auto_start_break) {
+              if(countSession >= form.long_break_interval) {
+                setTime({
+                  min: form.timer.long_break,
+                  sec: 0,
+                });
+                setActiveTab("long_break");
+              } else {
+                setTime({
+                  min: form.timer.short_break,
+                  sec: 0,
+                });
+                setActiveTab("short_break");
+              }
+            }
+          } else if(form.auto_start_pomodoro) {
+            if(activeTab === 'long_break') {
+              localStorage.setItem('total_session_completed', 0);
+            }
+            setTime({
+              min: form.timer.pomodoro,
+              sec: 0,
+            });
+            setActiveTab("pomodoro");
+          } else {
+            setActive(false);
+          }
+        }else if (time.sec === 0) {
+          setTime({ min: time.min - 1, sec: 59 });
         } else {
           setTime({ ...time, sec: time.sec - 1 });
         }
       }, 1000);
     }
-    return () => clearInterval(interval);
-  },[active, time]);
+    return () => {
+      clearInterval(interval)};
+  },[active, time, activeTab, form]);
   return (
     <>
-      <Header />
+      <Header form={form} setForm ={setForm} />
       <div className="flex justify-center items-center bg-white bg-opacity-10">
         <div>
           <div className="tabs tabs-boxed mt-3">
@@ -97,14 +142,14 @@ function App() {
           </div>
           <div className="flex justify-center items-center mt-3">
             <button
-              className="btn btn-primary p-2"
+              className="btn btn-primary p-2 m-1"
               onClick={() => onStartTimer()}
               disabled={active}
             >
               Start
             </button>
             <button
-              className="btn btn-secondary p-2"
+              className="btn btn-secondary p-2 m-1"
               onClick={() => onStopTimer()}
               disabled={!active}
             >

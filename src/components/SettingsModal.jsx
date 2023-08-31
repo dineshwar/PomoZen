@@ -1,29 +1,14 @@
-import { useState } from "react";
-import { merge } from 'lodash';
+import { PropTypes } from "prop-types";
+const MAX_MIN = 99;
 
-const MIN_IN_A_DAY = 1440;
-
-const SettingsModal = () => {
-  const defaultFormData = {
-    timer: {
-      pomodoro: 25,
-      short_break: 5,
-      long_break: 15,
-    },
-    auto_start_break: true,
-    auto_start_pomodoro: true,
-    long_break_interval: 3,
-  };
-  const formData = JSON.parse(localStorage.getItem('pomodoro_settings'));
-  const stateData = merge({}, defaultFormData, formData)
-  const [form, setForm] = useState(stateData);
+const SettingsModal = ({form, setForm}) => {
   const timerInputHandler = (event) => {
     setForm((preVal) => {
       return {
         ...preVal,
         timer:{
           ...preVal.timer,
-          [event.target.name]: (event.target.value) > MIN_IN_A_DAY ? MIN_IN_A_DAY : event.target.value
+          [event.target.name]: (event.target.value) > MAX_MIN ? MAX_MIN : event.target.value
         }
       }
     })
@@ -116,5 +101,10 @@ const SettingsModal = () => {
     </dialog>
   );
 };
+
+SettingsModal.propTypes = {
+  form: PropTypes.object,
+  setForm: PropTypes.func,
+}
 
 export default SettingsModal;
